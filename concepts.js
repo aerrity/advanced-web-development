@@ -1,0 +1,1 @@
+document.querySelectorAll('.copy-code').forEach(button=>{button.addEventListener('click',async()=>{const text=button.closest('.code-card').querySelector('code').textContent;try{await navigator.clipboard.writeText(text);button.textContent='Copied';setTimeout(()=>button.textContent='Copy',1800);}catch{button.textContent='Select code to copy';}})});

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta content="How index, show, create, store, edit, update and destroy fit together." name="description"/><title>CRUD: reading and changing data · Advanced Web Development</title><link href="site.css" rel="stylesheet"/><link href="concepts.css" rel="stylesheet"/><script defer="" src="concepts.js"></script><link href="module-nav.css" rel="stylesheet"/></head><body><a class="skip" href="#main">Skip to main content</a><div class="module-nav" role="banner"><div class="module-nav-inner"><a aria-label="Advanced Web Development, module home" class="module-nav-brand" href="index.html"><strong>IADT / CREATIVE COMPUTING</strong><small>ADVANCED WEB DEVELOPMENT · CC2 / S1</small></a><nav aria-label="Module resources" class="module-nav-links"><a href="index.html">Module home</a><a href="learning-lab/index.html">Learning Lab</a><a aria-current="page" href="theory.html">Concepts</a><a href="assignment.html">Assignment</a></nav></div></div><main class="shell concept-layout" id="main"><aside aria-label="Concept navigation" class="concept-sidebar"><p class="side-eyebrow">THEORY / CONCEPTS</p><nav><a href="laravel-tools.html"><span>01</span> Laravel and its tools</a><a href="mvc-request.html"><span>02</span> MVC and the request lifecycle</a><a href="blade-templates.html"><span>03</span> Blade templates</a><a href="data-eloquent.html"><span>04</span> Working with data</a><a class="current" href="crud.html"><span>05</span> CRUD: reading and changing data</a><a href="authorisation.html"><span>06</span> Roles and authorisation</a><a href="testing-debugging.html"><span>07</span> Testing and debugging</a><a href="request-trace.html"><span>08</span> Putting it all together</a></nav><div class="side-tip">Short explanations to support the practical Learning Lab.</div><a class="back-all" href="theory.html">← All concept notes</a></aside><article class="concept-content"><div class="concept-overline"><span>CONCEPT 05 / 08</span><span>12 MIN READ</span></div><p class="concept-tag">COMMON ACTIONS</p><h1>CRUD: reading and changing data</h1><p class="concept-lead">Most web apps let people create, read, update and delete records. Laravel resource controllers name these common operations consistently.</p><section class="concept-section"><p class="section-index">01 / THE CRUD MAP</p><h2>Four operations, seven controller methods.</h2><div class="table-scroll"><table><thead><tr><th>Operation</th><th>Actions</th><th>What the user experiences</th></tr></thead><tbody><tr><td><strong>Read</strong></td><td><code>index()</code>, <code>show()</code></td><td>Browse all books, open one book</td></tr><tr><td><strong>Create</strong></td><td><code>create()</code>, <code>store()</code></td><td>Display a blank form, save its contents</td></tr><tr><td><strong>Update</strong></td><td><code>edit()</code>, <code>update()</code></td><td>Display a populated form, save changes</td></tr><tr><td><strong>Delete</strong></td><td><code>destroy()</code></td><td>Remove a record</td></tr></tbody></table></div><aside class="remember"><span>THE MAIN IDEA</span><strong>Form display and saving are separate steps.</strong><p><code>create()</code> shows the form; <code>store()</code> saves it. <code>edit()</code> shows an existing record in a form; <code>update()</code> saves changes.</p></aside></section><section class="concept-section"><p class="section-index">02 / READ</p><h2>Show a list, or open one record.</h2><p><code>index()</code> loads a collection of books for a listing page. <code>show()</code> displays one specific book. Both are handled by <strong>GET</strong> requests, so they should not change the database.</p><div class="code-card"><div class="code-head"><span>BookController.php · simplified read actions</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>// List books on the index page.
+public function index()
+{
+    $books = Book::all();
+    return view('books.index', compact('books'));
+}
+
+// Show one book. Laravel resolves $book from the URL.
+public function show(Book $book)
+{
+    return view('books.show', compact('book'));
+}</code></pre></div><p class="micro-note"><code>Book::all()</code> returns all books. <code>compact('books')</code> passes the variable to the Blade template. For larger collections, use pagination as in the Learning Lab.</p></section>
+<section class="concept-section"><p class="section-index">03 / CREATE</p><h2>Show a blank form, then save a new book.</h2><p><code>create()</code> shows the empty form using a <strong>GET</strong> request. When the user submits it, a <strong>POST</strong> request goes to <code>store()</code>, which validates the values and creates the new database record.</p><div class="code-card"><div class="code-head"><span>BookController.php · simplified create actions</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>// Show an empty form.
+public function create()
+{
+    return view('books.create');
+}
+
+// Process the submitted form.
+public function store(Request $request)
+{
+    $data = $request-&gt;validate([
+        'title' =&gt; ['required', 'string'],
+    ]);
+
+    Book::create($data);
+    return redirect()-&gt;route('books.index');
+}</code></pre></div><aside class="remember"><span>VALIDATION IS DIFFERENT FROM AUTHORISATION</span><strong>Is this data acceptable?</strong><p><code>$request-&gt;validate()</code> checks the values submitted through a form. For example, <code>required</code> means the field must not be empty, <code>string</code> expects text, and <code>max:255</code> limits its length. If validation fails, Laravel returns the user to the form with error messages and their previous input.</p><p>Validation checks <em>the data</em>. Authorisation checks <em>whether the user is allowed</em> to perform the action. A valid title does not give an ordinary user permission to create books.</p></aside><div class="code-card"><div class="code-head"><span>books/create.blade.php · form</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>&lt;form method="POST" action="{{ route('books.store') }}"&gt;
+    @csrf
+    &lt;input name="title" required&gt;
+    &lt;button type="submit"&gt;Create book&lt;/button&gt;
+&lt;/form&gt;</code></pre></div><p><code>@csrf</code> adds a hidden security token to the form. When you submit it, Laravel checks that the token matches your session. This helps prevent another website from secretly making your browser submit a form to your application while you are signed in. It does <strong>not</strong> check whether the input is valid or whether you have permission to create books; those are separate checks.</p></section>
+<section class="concept-section"><p class="section-index">04 / UPDATE</p><h2>Load existing values, then save the edits.</h2><p><code>edit()</code> shows a form containing the selected book’s current details. <code>update()</code> validates the submission and changes <strong>that existing record</strong>, instead of inserting a new one.</p><div class="code-card"><div class="code-head"><span>BookController.php · simplified update actions</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>// Display the edit form with the existing book.
+public function edit(Book $book)
+{
+    return view('books.edit', compact('book'));
+}
+
+// Validate and save the changes.
+public function update(Request $request, Book $book)
+{
+    $data = $request-&gt;validate([
+        'title' =&gt; ['required', 'string'],
+    ]);
+
+    $book-&gt;update($data);
+    return redirect()-&gt;route('books.show', $book);
+}</code></pre></div><div class="code-card"><div class="code-head"><span>books/edit.blade.php · form</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>&lt;form method="POST" action="{{ route('books.update', $book) }}"&gt;
+    @csrf
+    @method('PUT')
+    &lt;input name="title" value="{{ old('title', $book-&gt;title) }}"&gt;
+    &lt;button type="submit"&gt;Save changes&lt;/button&gt;
+&lt;/form&gt;</code></pre></div><p class="micro-note"><code>old('title', $book-&gt;title)</code> keeps submitted input after a validation error, otherwise it shows the current title. HTML forms don’t directly support PUT, so <code>@method('PUT')</code> tells Laravel which request method to treat it as.</p></section>
+<section class="concept-section"><p class="section-index">05 / DELETE</p><h2>Remove the selected record.</h2><p><code>destroy()</code> deletes a book identified by its route parameter. A form sends a <strong>DELETE</strong> request to that action; a normal link should not delete data.</p><div class="code-card"><div class="code-head"><span>BookController.php · simplified delete action</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>// Delete a specific book, then go back to the list.
+public function destroy(Book $book)
+{
+    $book-&gt;delete();
+    return redirect()-&gt;route('books.index');
+}</code></pre></div><div class="code-card"><div class="code-head"><span>books/show.blade.php · delete form</span><button aria-label="Copy code example" class="copy-code" type="button">Copy</button></div><pre><code>&lt;form method="POST" action="{{ route('books.destroy', $book) }}"&gt;
+    @csrf
+    @method('DELETE')
+    &lt;button type="submit"&gt;Delete book&lt;/button&gt;
+&lt;/form&gt;</code></pre></div><p class="micro-note">In a real app, only authorised users should be able to delete books. You should also consider how related reviews and other records are handled.</p></section><section class="concept-section"><p class="section-index">06 / FOLLOW THE ACTION</p><h2>What happens when you press Save?</h2><div aria-label="Request flow" class="concept-flow"><div class="flow-node"><span>01</span><strong>Form</strong><small>POST /books</small></div><div class="flow-node"><span>02</span><strong>Route</strong><small>books.store</small></div><div class="flow-node"><span>03</span><strong>Controller</strong><small>store()</small></div><div class="flow-node"><span>04</span><strong>Model</strong><small>Book::create()</small></div><div class="flow-node"><span>05</span><strong>Response</strong><small>Redirect</small></div></div><details class="check"><summary><span class="check-ico">?</span>Which method should save edits to an existing book: edit(), update(), or store()?<span class="reveal">Reveal answer</span></summary><p><code>update()</code> saves changes. <code>edit()</code> displays the edit form, while <code>store()</code> creates a new record.</p></details><details class="check"><summary><span class="check-ico">?</span>Which method displays an empty form, and which method saves a new book?<span class="reveal">Reveal answer</span></summary><p><code>create()</code> shows the form; <code>store()</code> validates and saves its submitted data.</p></details></section><section class="lab-section"><p class="section-index">TRY IT IN THE LEARNING LAB</p><h2>See it in the project.</h2><p>Return to these guided lessons when you're ready to practise.</p><div class="lab-links"><a class="lab-link" href="learning-lab/index.html#m04-s02">Read book records <span>↗</span></a><a class="lab-link" href="learning-lab/index.html#m05-s01">Create a book <span>↗</span></a><a class="lab-link" href="learning-lab/index.html#m05-s03">Edit a book <span>↗</span></a><a class="lab-link" href="learning-lab/index.html#m05-s04">Delete a book <span>↗</span></a></div></section><div class="page-turn"><a href="data-eloquent.html">← Working with data</a><a class="next-page" href="authorisation.html">Next: Roles and authorisation →</a></div></article></main></body></html>

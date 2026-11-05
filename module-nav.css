@@ -1,0 +1,17 @@
+/* Shared module navigation across the homepage, concepts and Learning Lab. */
+.module-nav{position:sticky;top:0;z-index:1000;min-height:68px;background:#fff;border-bottom:1px solid #e8e1ef;color:#352d42;font-family:'DM Sans',sans-serif;letter-spacing:normal}
+.module-nav *{box-sizing:border-box}
+.module-nav-inner{width:min(1180px,calc(100% - 68px));margin:0 auto;min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.module-nav-brand{display:flex;flex-direction:column;gap:2px;color:#332644!important;text-decoration:none!important;line-height:1.3;flex-shrink:0}
+.module-nav-brand strong{font-size:12px;font-weight:800;letter-spacing:1px}
+.module-nav-brand small{font-size:10px;letter-spacing:.7px;color:#91839e;font-weight:650}
+.module-nav-links{display:flex;align-items:center;gap:6px;min-width:0;overflow-x:auto;scrollbar-width:thin}
+.module-nav-links a{display:block;color:#6f627b!important;text-decoration:none!important;border-radius:7px;padding:10px 12px;font-weight:700;font-size:12px;white-space:nowrap;line-height:1.5;border:1px solid transparent}
+.module-nav-links a:hover{background:#f6f2fa!important;color:#4f2c85!important}
+.module-nav-links a[aria-current="page"]{color:#4f2c85!important;background:#f0e9f7!important;border-color:#e8ddf3}
+.module-page-jumps{background:#faf8fc;border-bottom:1px solid #f0eaf4}
+.module-page-jumps .jump-inner{width:min(1180px,calc(100% - 68px));margin:0 auto;display:flex;align-items:center;gap:22px;padding:12px 0;overflow-x:auto}
+.module-page-jumps span{font-size:10px;font-weight:800;color:#9785a8;letter-spacing:1px;white-space:nowrap}
+.module-page-jumps a{font-size:12px;font-weight:700;color:#6b537f;text-decoration:none;white-space:nowrap}
+.module-page-jumps a:hover{text-decoration:underline}
+@media(max-width:700px){.module-nav-inner,.module-page-jumps .jump-inner{width:calc(100% - 28px)}.module-nav-inner{min-height:68px;gap:10px}.module-nav-brand strong{font-size:10px}.module-nav-brand small{font-size:9px;letter-spacing:0}.module-nav-links{gap:2px}.module-nav-links a{padding:9px 8px;font-size:11px}.module-page-jumps .jump-inner{gap:14px}}

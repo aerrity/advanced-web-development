@@ -1,0 +1,187 @@
+{
+  "lesson_count": 35,
+  "module_count": 8,
+  "detailed_new_lessons": 28,
+  "source_topics_used": 25,
+  "code_panels": 197,
+  "verified_full_files": 61,
+  "source_commit": "User-uploaded book-reviews-student-main(1).zip; compared against public GitHub main on 2026-11-02",
+  "lessons": [
+    [
+      "m02-s01",
+      32,
+      20154,
+      6
+    ],
+    [
+      "m02-s02",
+      37,
+      15653,
+      12
+    ],
+    [
+      "m02-s03",
+      33,
+      12960,
+      9
+    ],
+    [
+      "m02-s04",
+      26,
+      14548,
+      7
+    ],
+    [
+      "m03-s01",
+      18,
+      10337,
+      3
+    ],
+    [
+      "m03-s02",
+      36,
+      12771,
+      12
+    ],
+    [
+      "m03-s03",
+      37,
+      15080,
+      14
+    ],
+    [
+      "m03-s04",
+      26,
+      7826,
+      9
+    ],
+    [
+      "m04-s01",
+      26,
+      16893,
+      8
+    ],
+    [
+      "m04-s02",
+      23,
+      16605,
+      7
+    ],
+    [
+      "m04-s03",
+      13,
+      6787,
+      1
+    ],
+    [
+      "m04-s04",
+      27,
+      17195,
+      9
+    ],
+    [
+      "m05-s01",
+      20,
+      12958,
+      5
+    ],
+    [
+      "m05-s02",
+      15,
+      15234,
+      2
+    ],
+    [
+      "m05-s03",
+      30,
+      20314,
+      10
+    ],
+    [
+      "m05-s04",
+      37,
+      23511,
+      11
+    ],
+    [
+      "m06-s01",
+      24,
+      13629,
+      6
+    ],
+    [
+      "m06-s02",
+      33,
+      16890,
+      10
+    ],
+    [
+      "m06-s03",
+      20,
+      16404,
+      5
+    ],
+    [
+      "m06-s04",
+      23,
+      19160,
+      7
+    ],
+    [
+      "m07-s01",
+      18,
+      17590,
+      4
+    ],
+    [
+      "m07-s02",
+      16,
+      15629,
+      3
+    ],
+    [
+      "m07-s03",
+      16,
+      14755,
+      4
+    ],
+    [
+      "m07-s04",
+      12,
+      9182,
+      2
+    ],
+    [
+      "m08-s01",
+      27,
+      17354,
+      8
+    ],
+    [
+      "m08-s02",
+      18,
+      19607,
+      4
+    ],
+    [
+      "m08-s03",
+      17,
+      10342,
+      3
+    ],
+    [
+      "m08-s04",
+      8,
+      3770,
+      2
+    ]
+  ],
+  "validation": {
+    "javascript_syntax": "PASS — node --check app.js and lessons.js",
+    "browser_routes": "PASS — all 35 activities loaded without JavaScript errors",
+    "quizzes": "PASS — all 35 correct-answer checks",
+    "php_syntax": "PASS — all 116 PHP files in supplied repository",
+    "completed_source_matches": "PASS — all 61 exact-reference panels SHA-256 matched the supplied files",
+    "laravel_feature_tests": "NOT RUN — no Docker/MySQL/Composer vendor dependencies available"
+  }
+}
