@@ -123,3 +123,8 @@ E3 Administration and Permissions and E4 Interactive Search have additional guid
 ## v19: Simplified roles walkthrough
 
 The new Module 07 focuses only on user/admin role assignment, protecting book management, UI adjustments, and verifying existing review ownership. Detailed author CRUD instructions are removed. See `instructor/V19-ROLES-SIMPLIFIED.md`.
+
+
+## Optional extension E4: Design a better book experience
+
+Three independent, supported design challenges extend the existing Blade/Tailwind interface: polishing the existing responsive grid (which is already three columns at large widths), redesigning the book-detail view, and improving form usability/feedback. No additional front-end framework or backend feature is needed.

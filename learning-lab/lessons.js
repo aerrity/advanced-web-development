@@ -122,13 +122,17 @@ const lessons = [
       {
         "type": "text",
         "title": "Build the browser assets",
-        "text": "npm installs the JavaScript packages. The build command then runs Vite to prepare the CSS and JavaScript that the browser uses."
+        "text": "<p>Laravel's Blade templates use Tailwind CSS classes such as <code>grid-cols-3</code> and <code>h-48</code>. Those class names only work when Tailwind has generated the corresponding CSS. <strong>Vite</strong> prepares that CSS and the JavaScript for the browser. First install the npm packages, then run <code>npm run build</code> to create the files in <code>public/build/</code>.</p><p><strong>For this Docker-based walkthrough, use <code>npm run build</code> as the default.</strong> The alternative, <code>npm run dev</code>, starts a separate Vite server which must remain running and reachable from the browser. You do not need it for these lessons.</p>"
       },
       {
         "type": "code",
         "file": "Terminal · workspace container",
         "label": "Install and build the frontend assets",
         "text": "npm install --ignore-scripts && npm run build"
+      },
+      {
+        "type": "help",
+        "text": "<strong>Styles missing?</strong> If the page looks unstyled, the books appear in one long column, or book covers are enormous later in the course, the generated Tailwind CSS may be missing or stale. From the Laravel project directory inside the workspace run <code>npm run build</code>, then refresh the browser. If the page still looks wrong, confirm the command completed without errors and that <code>public/build/</code> exists. If you previously used <code>npm run dev</code>, stop it first and check for a stale <code>public/hot</code> file, which tells Laravel to load assets from the development server instead of the build. Only remove that file when the dev server is no longer running."
       },
       {
         "type": "text",
@@ -975,7 +979,7 @@ const lessons = [
       {
         "type": "text",
         "title": "How npm builds the frontend assets",
-        "text": "<p><code>package.json</code> is Composer's JavaScript equivalent — a list of JS\npackages, read by <code>npm install</code>. The bare install already lists a few:\nTailwind CSS (for styling) and Vite (the build tool). Browsers can't run\nTailwind's utility classes or your <code>.css</code>/<code>.js</code> source files directly the\nway they are on disk — they need <strong>bundling</strong>: resolving imports,\ncompiling Tailwind's classes into plain CSS, and writing the result to\n<code>public/build/</code> as a handful of hashed files a Blade view pulls in with\none <code>@vite(...)</code> directive. Vite is the tool that does that bundling.</p><p>Two npm scripts matter, both already defined in <code>package.json</code>:</p><ul>\n<li><code>npm run build</code> — one-shot, produces the optimized files that actually\nship. This is what first-time setup ran, and what you'll re-run any time\nyou want a fresh production bundle.</li>\n<li><code>npm run dev</code> — starts Vite in watch mode instead: it stays running,\nrebuilding automatically as you edit CSS/JS, and the browser picks up\nthe change without a manual reload. You won't need this yet — it\nmatters once you're actively editing views — but it's worth knowing it\nexists, since <code>compose.yaml</code> already exposes the port it runs on\n(<code>5173</code>) for exactly that purpose.</li>\n</ul>"
+        "text": "<p><code>package.json</code> lists the JavaScript and frontend packages. npm installs them. <strong>Tailwind</strong> provides CSS utility classes used in the Blade templates, and <strong>Vite</strong> builds the CSS/JavaScript files into <code>public/build/</code>. Without that generated CSS, Tailwind class names in HTML have no effect. A three-column book grid can appear as one column with huge book covers even though the Blade markup is correct.</p><ul><li><code>npm run build</code> generates the static assets the Laravel app can serve directly. <strong>Use this as your default for our Docker walkthrough</strong>, including after installing Breeze or whenever styles aren't appearing.</li><li><code>npm run dev</code> starts a separate development asset server for live CSS/JavaScript updates. It only works as intended while that server is running and accessible; it isn't necessary for the walkthrough.</li></ul><p>Blade's <code>@vite(...)</code> directive loads the assets. With no development server active, Laravel should load the built files from <code>public/build/</code>.</p>"
       },
       {
         "type": "text",
@@ -1005,12 +1009,31 @@ const lessons = [
       {
         "type": "text",
         "title": "",
-        "text": "<p><code>blade</code> is the stack this app uses throughout — plain Blade views and\ncontrollers, no Inertia, matching the \"None\" choice above. (Breeze also\noffers <code>react</code>, <code>vue</code>, and <code>api</code> stacks; not used here.) That one command\ngenerated the auth routes, views, and controller, then ran <code>npm install</code>\nand <code>npm run build</code> on its own, so the styled result is ready to view\nimmediately.</p>"
+        "text": "<p><code>blade</code> is the stack this app uses throughout — plain Blade views and\ncontrollers, no Inertia, matching the \"None\" choice above. (Breeze also\noffers <code>react</code>, <code>vue</code>, and <code>api</code> stacks; not used here.) This command generates the authentication routes, views and controllers. Depending on the installer and environment, frontend dependencies and assets may also be built, but <strong>you should explicitly run the build command in the next step</strong> to ensure the generated styling is up to date.</p>"
       },
       {
         "type": "text",
         "title": "What actually landed",
         "text": "<ul>\n<li><code>routes/auth.php</code> — registration, login, logout, and password-reset\nroutes, <code>require</code>d from the bottom of <code>routes/web.php</code>.</li>\n<li><code>resources/views/auth/</code> — a Blade view per route above; <code>dashboard.blade.php</code>\nand <code>resources/views/profile/</code> for a logged-in user's own account page.</li>\n<li><code>app/Http/Controllers/Auth/</code> and <code>ProfileController.php</code> — the\ncontrollers those routes call.</li>\n<li><code>tests/Feature/Auth/</code> and <code>ProfileTest.php</code> — Breeze ships its own\nfeature tests for every route it just generated.</li>\n</ul><p>Nothing about the database changed — Breeze's Blade stack reuses the\n<code>users</code> migration <code>laravel new</code> already created, so there's nothing new\nto migrate here. One smaller, purely cosmetic change is worth naming so it\ndoesn't look like a mistake later: Breeze's installer replaced the bare\ninstall's Tailwind v4 setup (a plugin in <code>vite.config.js</code>, configured via\nan <code>@theme</code> block in <code>app.css</code> itself) with the older <code>tailwind.config.js</code></p><ul>\n<li><code>postcss.config.js</code> pair and Tailwind v3 — Breeze's Blade stack still\ntargets that setup. Both are Tailwind; only the configuration shape\ndiffers.</li>\n</ul><p>None of this touches authoriz<em>ation</em> — who's allowed to do what. Breeze\nonly answers <em>who's logged in</em>, the same distinction raised at the start\nof this lesson.</p><p><strong>Check your routes:</strong> Breeze may replace the earlier <code>routes/web.php</code> file when it installs its dashboard and authentication pages. If the temporary <code>/books</code> route from Module 01 has disappeared, that is expected. You will add the book routes again in Module 04.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Build and check the Breeze styles",
+        "text": "<p>Before opening the registration page, run the frontend build from the <strong>Laravel project directory</strong> (<code>/var/www/html</code> in the Docker workspace, corresponding to <code>src/</code> on your computer). This ensures that the Tailwind CSS generated for Breeze is available to the browser, even if the installer already attempted a build.</p>"
+      },
+      {
+        "type": "code",
+        "file": "Terminal · workspace container / Laravel project",
+        "label": "Compile the Blade/Tailwind frontend assets",
+        "text": "npm run build"
+      },
+      {
+        "type": "check",
+        "text": "<strong>Visual check:</strong> Open <code>http://localhost:8080/register</code>. The form should have spacing, aligned fields and styled buttons. If it looks like plain HTML, the build may not have loaded. Check the build output for errors, confirm <code>public/build/</code> was created, and refresh. Later, if book covers are huge or the index becomes one column on desktop, use this same check. A working layout should not depend on leaving <code>npm run dev</code> running."
+      },
+      {
+        "type": "help",
+        "text": "<strong>If you tried <code>npm run dev</code>:</strong> Stop it with Ctrl+C before switching to <code>npm run build</code>. Laravel may use a <code>public/hot</code> marker to request assets from the development server. If that marker remains after the server stops, Laravel might keep pointing at the wrong asset source. Check for it and remove it only if the dev server is no longer running. Do not change Blade grid classes to compensate for unstyled pages."
       },
       {
         "type": "text",
@@ -4653,5 +4676,294 @@ const lessons = [
     ],
     "answer": 0,
     "feedback": "A clear definition of success makes an independent implementation easier to design and assess."
+  },
+  {
+    "id": "x13-s01",
+    "module": 13,
+    "challenge": true,
+    "title": "Polish the responsive book grid",
+    "time": "30 min",
+    "intro": "Improve the existing three-column catalogue layout with stronger visual hierarchy, consistent cards and better small-screen behaviour.",
+    "parts": [
+      {
+        "type": "text",
+        "title": "Your design challenge",
+        "text": "<p>The catalogue <em>already</em> has a responsive 1/2/3-column grid. Your task is to refine it, not to build the same grid again. Make each book easy to scan, ensure images behave consistently, and retain the search and pagination controls.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Where to begin",
+        "text": "<p><strong>Starting point:</strong> Use your completed Module 09 Book Reviews app. This challenge improves its existing interface; it does not require new controllers, migrations or external front-end libraries.</p><p>Open <code>resources/views/books/index.blade.php</code> and <code>resources/views/books/partials/card.blade.php</code>. Compare the current list at desktop and mobile widths. Decide what should stand out: cover, title, author and rating.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 1 · Understand the existing grid",
+        "text": "<p>Find the existing grid classes. Resize the browser while watching how the number of columns changes. Try changing the spacing or the breakpoint, then choose the version that reads best.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/index.blade.php · existing layout to inspect",
+        "label": "Existing layout: adapt, do not replace the whole page",
+        "text": "<div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6\">\n    @forelse ($books as $book)\n        @include('books.partials.card', ['book' => $book])\n    @empty\n        <p class=\"col-span-full\">No books found.</p>\n    @endforelse\n</div>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 2 · Improve the card",
+        "text": "<p>Work in the existing card partial. Try a consistent image area, a clearer title, subtle borders or a more intentional rating position. <strong>Keep</strong> the existing cover URL expression, author names and rating logic; they are already wired to your models.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/partials/card.blade.php · classes to try",
+        "label": "Partial example: combine with the existing card content",
+        "text": "<article class=\"flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition-shadow hover:shadow-md\">\n    <div class=\"aspect-[3/4] bg-gray-50 p-4\">\n        <img src=\"{{ $book->image ? Storage::url($book->image) : asset('images/book-placeholder.png') }}\"\n             alt=\"Cover of {{ $book->title }}\"\n             class=\"h-full w-full object-contain\">\n    </div>\n    <div class=\"flex flex-1 flex-col gap-2 p-5\">\n        <h3 class=\"text-lg font-semibold leading-snug\">\n            <a href=\"{{ route('books.show', $book) }}\" class=\"rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600\">\n                {{ $book->title }}\n            </a>\n        </h3>\n        {{-- Reuse the existing author, year and review-rating markup here. --}}\n    </div>\n</article>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 3 · Build a reusable star rating",
+        "text": "<p>The existing card shows an average such as <code>4.2 / 5 (6 reviews)</code>. Let’s keep that useful number but add <strong>five visual stars</strong>. The star display should represent the average rating, <em>not</em> one individual review.</p><p>Create <code>resources/views/books/partials/rating-stars.blade.php</code>. This partial receives two variables: <code>$averageRating</code> (a number from 0 to 5) and <code>$reviewCount</code> (how many reviews exist). It rounds the average for the stars but preserves one decimal place in the text. For example, 3.6 displays <strong>★★★★☆</strong> and <strong>3.6 / 5</strong>.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/partials/rating-stars.blade.php · create this file",
+        "text": "@php\n    // Round the average to a whole number of filled stars (0–5).\n    $filledStars = max(0, min(5, (int) round($averageRating ?? 0)));\n@endphp\n\n@if ($reviewCount > 0)\n    <div class=\"flex items-center gap-2 text-sm\">\n        <span class=\"text-amber-500\" aria-hidden=\"true\">\n            @for ($star = 1; $star <= 5; $star++)\n                {{ $star <= $filledStars ? '★' : '☆' }}\n            @endfor\n        </span>\n        <span class=\"text-gray-600\">\n            {{ number_format($averageRating, 1) }} / 5\n            ({{ $reviewCount }} {{ \\Illuminate\\Support\\Str::plural('review', $reviewCount) }})\n        </span>\n    </div>\n@else\n    <p class=\"text-sm text-gray-500\">Not rated yet</p>\n@endif"
+      },
+      {
+        "type": "text",
+        "title": "How the star loop works",
+        "text": "<p><code>@for</code> repeats five times, once for each star. If the current position is at or below <code>$filledStars</code>, Blade prints a filled star (<strong>★</strong>); otherwise it prints an outline (<strong>☆</strong>). <code>aria-hidden=\"true\"</code> prevents screen readers from reading five decorative symbols; the adjacent numeric rating and review count communicate the same information. When there are no reviews, show <em>Not rated yet</em>, not zero stars implying a poor rating.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 4 · Use the stars on each book card",
+        "text": "<p>Open <code>resources/views/books/partials/card.blade.php</code>. Find the existing paragraph that prints <code>reviews_avg_rating</code>, <code>reviews_count</code> and “No reviews yet”. <strong>Replace that whole rating paragraph</strong> with the include below; don’t leave both versions on the card. Keep the rest of your card styling as you designed it.</p><p>These fields are already provided by the book index controller using <code>withAvg('reviews', 'rating')</code> and <code>withCount('reviews')</code>.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/partials/card.blade.php · replace existing rating paragraph",
+        "text": "@include('books.partials.rating-stars', [\n    'averageRating' => $book->reviews_avg_rating,\n    'reviewCount' => $book->reviews_count,\n])"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 5 · Verify what students actually see",
+        "text": "<p>Open <code>/books</code> with books that have: <strong>no reviews</strong>, one review rated 5, and several reviews with different ratings. Check that the number of filled stars changes, the decimal average remains correct, and the review count uses “review” versus “reviews”. Try the page at a narrow viewport and check that stars do not break the card layout.</p><p>If the new styles are not appearing, run <code>npm run build</code> from your Laravel <code>src</code> directory and refresh the browser.</p>"
+      },
+      {
+        "type": "hint",
+        "title": "Progressive hints",
+        "levels": [
+          {
+            "title": "Where should I look?",
+            "text": "Begin with the two Blade files, not the controller. You already have an index page and a reusable card partial."
+          },
+          {
+            "title": "Which technique helps?",
+            "text": "Tailwind classes such as <code>grid-cols-1</code>, <code>sm:grid-cols-2</code>, <code>lg:grid-cols-3</code>, <code>aspect-[3/4]</code> and <code>object-contain</code> solve different layout problems."
+          },
+          {
+            "title": "Small code clue",
+            "text": "Try <code>h-full flex flex-col</code> on the card and <code>mt-auto</code> on the rating block to align card bottoms."
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "title": "Check your implementation",
+        "text": "<ul class=\"challenge-checklist\"><li>One column on narrow screens, two on medium screens and three on large screens, unless you justify another arrangement.</li><li>Long titles and missing covers remain readable.</li><li>Book links have visible keyboard focus; search, empty states and pagination still work.</li><li>Each rated book displays five star positions, a numeric average and review count; books with no reviews say “Not rated yet”.</li></ul>"
+      },
+      {
+        "type": "text",
+        "title": "Stretch goal",
+        "text": "<p>Offer a compact list view alongside the grid while reusing the same star-rating partial, without introducing a JavaScript framework.</p>"
+      }
+    ],
+    "q": "What is the most useful first step in this challenge?",
+    "options": [
+      "Replace the Book model with a presentation model.",
+      "Inspect and improve the existing index grid and card partial.",
+      "Install a new front-end framework."
+    ],
+    "answer": 1,
+    "feedback": "The book index already provides responsive columns; the design challenge is to improve its presentation without losing working functionality."
+  },
+  {
+    "id": "x13-s02",
+    "module": 13,
+    "challenge": true,
+    "title": "Redesign the book detail page",
+    "time": "25 min",
+    "intro": "Give the book cover, details and reviews a clear hierarchy using responsive layout and reusable Blade markup.",
+    "parts": [
+      {
+        "type": "text",
+        "title": "Your design challenge",
+        "text": "<p>A visitor should quickly understand which book they are viewing, who wrote it and what others think. Aim for a more inviting page without changing the data model or the review actions.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Where to begin",
+        "text": "<p><strong>Starting point:</strong> Use your completed Module 09 Book Reviews app. This challenge improves its existing interface; it does not require new controllers, migrations or external front-end libraries.</p><p>Open <code>resources/views/books/show.blade.php</code>. Identify the existing cover, title, author links, rating and review list. If reviews are rendered using a partial, preserve that inclusion rather than copying its code.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 1 · Sketch the layout",
+        "text": "<p>Sketch a mobile view with the cover above the details, and a desktop view with the cover beside the details. Decide where the review heading and “Write a Review” action belong. Place the key information before less important details.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/show.blade.php · responsive layout idea",
+        "label": "Adapt the layout around your existing data",
+        "text": "<div class=\"grid gap-8 md:grid-cols-[minmax(0,240px)_1fr]\">\n    <div class=\"rounded-xl bg-gray-50 p-5\">\n        {{-- Move your existing book-cover markup here. --}}\n    </div>\n    <div class=\"space-y-4\">\n        <h1 class=\"text-3xl font-bold tracking-tight text-gray-900\">\n            {{ $book->title }}\n        </h1>\n        {{-- Move existing author, year and rating markup here. --}}\n    </div>\n</div>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 2 · Add the same stars to the detail page",
+        "text": "<p>Reuse the <code>rating-stars.blade.php</code> partial from E4-01. Open <code>resources/views/books/show.blade.php</code> and put the include below beside the book title and author details, replacing any duplicate numeric rating display.</p><p>Unlike the index cards, the detail page has the book’s loaded <code>reviews</code> collection available, so calculate the average and count from that collection. <strong>No controller or database changes are required.</strong> An unrated book still shows “Not rated yet”.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/show.blade.php · add beside book details",
+        "text": "@include('books.partials.rating-stars', [\n    'averageRating' => $book->reviews->avg('rating'),\n    'reviewCount' => $book->reviews->count(),\n])"
+      },
+      {
+        "type": "text",
+        "title": "If you started with E4-02",
+        "text": "<p>The extensions are optional. If you have not completed E4-01, first create the <code>books/partials/rating-stars.blade.php</code> file using the example in that activity, then add the include above. The detail page should not assume the card redesign is already complete.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 3 · Make reviews easier to scan",
+        "text": "<p>Separate the book summary from the reviews with a section heading and generous spacing. Reuse the existing review partials, keeping edit/delete controls and ownership checks intact. Try consistent spacing between reviews and a readable text width.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/show.blade.php · review section idea",
+        "label": "Try adapting this example",
+        "text": "<section class=\"mt-10 border-t border-gray-200 pt-8\" aria-labelledby=\"reviews-heading\">\n    <h2 id=\"reviews-heading\" class=\"mb-5 text-2xl font-semibold\">\n        Reader reviews\n    </h2>\n    {{-- Keep your current review list, review partial and actions here. --}}\n</section>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 4 · Check the experience",
+        "text": "<p>Review the page with no reviews, many reviews, a long title and a missing cover. Verify the existing “Write a Review” link and management actions. Test mobile widths and keyboard navigation.</p>"
+      },
+      {
+        "type": "hint",
+        "title": "Progressive hints",
+        "levels": [
+          {
+            "title": "Where should I look?",
+            "text": "Start by grouping the content already in <code>books/show.blade.php</code>."
+          },
+          {
+            "title": "Which technique helps?",
+            "text": "Use responsive grid and spacing utilities. Avoid moving permission checks out of their existing controller/middleware paths."
+          },
+          {
+            "title": "Small code clue",
+            "text": "A simple starting point is <code>grid gap-8 md:grid-cols-[minmax(0,240px)_1fr]</code>, with a single column by default."
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "title": "Check your implementation",
+        "text": "<ul class=\"challenge-checklist\"><li>The important book details are easy to scan on mobile and desktop.</li><li>Existing author links, review content, and create/edit/delete review actions still work.</li><li>Section headings form a sensible order and controls can be reached by keyboard.</li><li>The star rating matches the book’s reviews and gracefully handles books without ratings.</li></ul>"
+      },
+      {
+        "type": "text",
+        "title": "Stretch goal",
+        "text": "<p>Experiment with showing a breakdown of five-star, four-star and other reviews. Keep the main average and review count easy to understand.</p>"
+      }
+    ],
+    "q": "What should stay unchanged during a visual redesign?",
+    "options": [
+      "Existing routes, data access and permission checks should keep working.",
+      "The page must become a JavaScript single-page app.",
+      "All review content should be hidden until hover."
+    ],
+    "answer": 0,
+    "feedback": "Rearrange the Blade presentation while preserving the working features and access rules."
+  },
+  {
+    "id": "x13-s03",
+    "module": 13,
+    "challenge": true,
+    "title": "Make forms and feedback clearer",
+    "time": "30 min",
+    "intro": "Improve labels, validation messages, confirmation feedback and keyboard accessibility in the existing forms.",
+    "parts": [
+      {
+        "type": "text",
+        "title": "Your design challenge",
+        "text": "<p>Help people complete forms confidently and understand what happened afterwards. Focus on clear labels, useful error messages, sensible spacing and visible success feedback rather than decorative effects.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Where to begin",
+        "text": "<p><strong>Starting point:</strong> Use your completed Module 09 Book Reviews app. This challenge improves its existing interface; it does not require new controllers, migrations or external front-end libraries.</p><p>Inspect <code>resources/views/books/partials/form.blade.php</code> and <code>resources/views/reviews/partials/form.blade.php</code>, then look at the create/edit pages that include them. Keep existing <code>@csrf</code>, <code>@method</code> and validation logic.</p>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 1 · Make a field understandable",
+        "text": "<p>Every input needs a visible label. Link its label to the field with matching <code>for</code> and <code>id</code> values. Use <code>old()</code> and <code>@error</code> so the visitor can recover from a failed submission without starting again.</p>"
+      },
+      {
+        "type": "code",
+        "file": "resources/views/books/partials/form.blade.php · field example",
+        "label": "Adapt one existing field first",
+        "text": "<div class=\"space-y-2\">\n    <label for=\"title\" class=\"block text-sm font-semibold text-gray-900\">\n        Book title\n    </label>\n    <input id=\"title\" name=\"title\" type=\"text\" required\n           value=\"{{ old('title', $book->title ?? '') }}\"\n           aria-describedby=\"title-error\"\n           class=\"w-full rounded-md border-gray-300 focus:border-indigo-600 focus:ring-indigo-600\">\n    @error('title')\n        <p id=\"title-error\" class=\"text-sm text-red-700\">{{ $message }}</p>\n    @enderror\n</div>"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 2 · Explain the result",
+        "text": "<p>After saving, a short success message can reassure users that the action worked. Check whether your controller already flashes a message with <code>with(&quot;success&quot;, ...)</code>. If so, render it in a common layout or on the destination page. Do not accidentally show a success message before the database action completes.</p>"
+      },
+      {
+        "type": "code",
+        "file": "Blade view or shared layout · success message",
+        "label": "Try adapting this example",
+        "text": "@if (session('success'))\n    <p role=\"status\" class=\"mb-5 rounded-lg border border-green-200 bg-green-50 p-4 text-green-900\">\n        {{ session('success') }}\n    </p>\n@endif"
+      },
+      {
+        "type": "text",
+        "title": "Checkpoint 3 · Review accessibility and deletion",
+        "text": "<p>Check focus states on inputs and buttons, errors after validation, and a clear distinction between Save and Delete actions. For destructive operations, consider a confirmation step and ensure your existing DELETE method and CSRF protection remain in place.</p>"
+      },
+      {
+        "type": "hint",
+        "title": "Progressive hints",
+        "levels": [
+          {
+            "title": "Where should I look?",
+            "text": "Pick one real form and improve it fully before repeating the pattern elsewhere."
+          },
+          {
+            "title": "Which technique helps?",
+            "text": "Use <code>label</code>, <code>old()</code>, <code>@error</code>, <code>role=\"status\"</code> and consistent Tailwind spacing."
+          },
+          {
+            "title": "Small code clue",
+            "text": "For a flash message, controllers can return <code>redirect()-&gt;route(...)-&gt;with('success', 'Saved successfully')</code>; views then read <code>session('success')</code>."
+          }
+        ]
+      },
+      {
+        "type": "text",
+        "title": "Check your implementation",
+        "text": "<ul class=\"challenge-checklist\"><li>Labels are visible and associated with the right fields.</li><li>Invalid submissions show useful errors and preserve entered values.</li><li>A successful action provides clear feedback and delete actions are identifiable.</li><li>The forms work without JavaScript, and all buttons have visible focus.</li></ul>"
+      },
+      {
+        "type": "text",
+        "title": "Stretch goal",
+        "text": "<p>Add a helpful empty state for the personal reviews page, with a link to browse books when the user has not reviewed anything yet.</p>"
+      }
+    ],
+    "q": "Which change helps users recover from an invalid form submission?",
+    "options": [
+      "Remove the form labels to save space.",
+      "Clear every field on any error.",
+      "Show field errors and restore the values they entered."
+    ],
+    "answer": 2,
+    "feedback": "Clear feedback and retained input make forms easier to use without changing the underlying Laravel workflow."
   }
 ];

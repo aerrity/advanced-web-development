@@ -22,3 +22,7 @@ The notes are conceptual, not a substitute for the guided build. Short illustrat
 - The assignment opens the bundled PDF in a new tab.
 
 V6: Student-facing assignment copy revisions, indicative extension guidance, and maximum word counts for the nine design-document sections. Original PDF unchanged.
+
+
+### E4 design extension (v12)
+The Learning Lab now contains four optional extensions (12 challenges). E4 introduces card-grid refinement, detail-page layout and accessible forms, with example Blade and Tailwind snippets.
