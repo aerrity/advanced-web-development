@@ -1,0 +1,22 @@
+
+/* Site-wide search. Uses only local, prebuilt data. */
+.awd-search-trigger{border:1px solid #ddd1e9;background:#faf7fd;color:#513078;border-radius:9px;padding:8px 11px;font:700 12px/1.4 inherit;white-space:nowrap;cursor:pointer;display:flex;gap:8px;align-items:center}
+.awd-search-trigger:hover,.awd-search-trigger:focus-visible{background:#efe7f7;outline:2px solid #7f55b5;outline-offset:2px}
+.awd-search-trigger kbd{font:600 10px/1.4 system-ui;border:1px solid #ddd1e9;border-radius:4px;padding:2px 4px;color:#746283}
+.awd-search-dialog{border:0;background:transparent;padding:14px;width:min(660px,calc(100vw - 20px));max-height:min(80vh,740px);color:#30253c;font:14px/1.5 system-ui,sans-serif;overflow:visible}
+.awd-search-dialog::backdrop{background:rgba(29,19,43,.62);backdrop-filter:blur(3px)}
+.awd-search-panel{background:white;border-radius:16px;box-shadow:0 20px 80px rgba(15,8,27,.35);overflow:hidden;display:flex;flex-direction:column;max-height:calc(80vh - 30px)}
+.awd-search-header{display:flex;align-items:center;padding:15px 17px;border-bottom:1px solid #eee8f4;gap:10px}
+.awd-search-header input{font:500 16px system-ui,sans-serif;min-width:0;flex:1;border:0!important;outline:0!important;box-shadow:none!important;background:transparent!important;color:#30253c!important;padding:4px 0!important}
+.awd-search-close{border:1px solid #dfd7e8;border-radius:6px;background:#faf8fc;color:#513078;cursor:pointer;padding:4px 9px;font:600 12px system-ui}
+.awd-search-meta{font-size:12px;color:#766b80;padding:10px 17px;background:#faf9fc}
+.awd-search-results{overflow-y:auto;overscroll-behavior:contain;padding:6px;min-height:72px}
+.awd-search-result{display:block;text-decoration:none!important;border-radius:9px;padding:11px 12px;color:#30253c!important;border:1px solid transparent;margin:3px 0;font:14px/1.45 system-ui,sans-serif}
+.awd-search-result:hover,.awd-search-result[aria-selected="true"]{background:#f3edfa;border-color:#ded0ed}
+.awd-search-result strong{display:block;font-size:14px;font-weight:750;color:#352443}
+.awd-search-result small{display:block;color:#704b95;font-size:11px;font-weight:700;letter-spacing:.25px;margin-bottom:3px}
+.awd-search-result span{display:block;color:#645a6c;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:3px}
+.awd-search-result mark{background:#fff0b8;border-radius:2px;padding:0 1px}
+.awd-search-empty{color:#645a6c;padding:30px 18px;text-align:center}
+.awd-search-help{border-top:1px solid #eee8f4;padding:8px 15px;color:#81758a;font-size:11px;background:#faf9fc}
+@media(max-width:780px){.awd-search-trigger kbd{display:none}.awd-search-trigger{padding:8px}.awd-search-label{display:none}.module-nav-inner{flex-wrap:wrap}.awd-search-trigger{margin-left:auto}}
