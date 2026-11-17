@@ -93,3 +93,14 @@
 #extension-disclosure[open] .extension-chevron{transform:rotate(180deg)}
 #extension-disclosure .extension-contents{padding-bottom:12px}
 #extension-disclosure:not([open]){margin-bottom:6px}
+
+/* Prominent Learning Lab home notice for Docker/Vite live styles. */
+.vite-alert{display:flex;gap:16px;align-items:flex-start;border:2px solid #b91c1c;background:#fff1f2;border-radius:12px;padding:22px 24px;margin:0 0 31px;color:#68151d;box-shadow:0 2px 10px #7f1d1d12}
+.vite-alert-icon{font-size:19px;font-weight:900;line-height:1;background:#b91c1c;color:#fff;border-radius:50%;height:31px;width:31px;display:grid;place-items:center;flex-shrink:0}
+.vite-alert-kicker{font-size:11px;font-weight:850;letter-spacing:1px;color:#9f1239;margin:0 0 7px}
+.vite-alert h2{font-family:Manrope,'DM Sans',sans-serif;font-size:20px;letter-spacing:-.6px;line-height:1.4;margin:0 0 8px;color:#7f1d1d}
+.vite-alert p:not(.vite-alert-kicker){font-size:13px;line-height:1.7;margin:0 0 13px;max-width:810px}
+.vite-alert code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:.95em;background:#ffe4e6;padding:2px 4px;border-radius:3px}
+.vite-alert-link{display:inline-flex;background:#b91c1c;color:#fff!important;text-decoration:none;border-radius:6px;padding:10px 14px;font-size:12px;font-weight:800}
+.vite-alert-link:hover{background:#991b1b}.vite-alert-link:focus-visible{outline:3px solid #9f1239;outline-offset:4px}
+@media(max-width:700px){.vite-alert{padding:17px 14px;gap:10px}.vite-alert h2{font-size:17px}}

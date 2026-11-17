@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Fix missing Tailwind styles when running Vite inside Docker for the Laravel Book Reviews project.">
+<title>Fix Vite development styling · Book Reviews Learning Lab</title>
+<link rel="stylesheet" href="../module-nav.css"><link rel="stylesheet" href="../search.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@500;600;700;800&display=swap');
+:root{--purple:#4f2c85;--ink:#30283e;--muted:#6c6476;--line:#e5dfed}*{box-sizing:border-box}body{margin:0;background:#fdfcfe;color:var(--ink);font:15px/1.7 'DM Sans',sans-serif}a{color:#592e90}a:focus-visible,button:focus-visible{outline:3px solid #b993da;outline-offset:3px}main{width:min(890px,calc(100% - 38px));margin:55px auto 90px}.crumb{font-size:12px;color:var(--muted);margin-bottom:32px}.crumb a{font-weight:700}.eyebrow{font-size:11px;font-weight:850;letter-spacing:1.5px;color:#8755a2;text-transform:uppercase}h1,h2,h3{font-family:Manrope,'DM Sans',sans-serif;line-height:1.3;letter-spacing:-.9px}h1{font-size:clamp(32px,4vw,48px);margin:10px 0 12px}h2{font-size:23px;margin:0 0 14px}h3{font-size:17px;margin:20px 0 6px}p{margin:0 0 15px}.lead{font-size:18px;color:#5e536a;line-height:1.7;max-width:760px;margin-bottom:27px}.critical{padding:20px 23px;border:2px solid #b91c1c;background:#fff1f2;border-radius:10px;margin:20px 0 32px}.critical strong{color:#881337}.critical p{margin:8px 0 0}.panel{background:white;border:1px solid var(--line);border-radius:10px;padding:25px 28px;margin:18px 0}.panel ol{padding-left:23px;margin:0}.panel li{margin:13px 0}.panel ul{padding-left:20px}.panel code:not(pre code){background:#f0ecf5;border-radius:4px;padding:2px 4px;font:600 .91em ui-monospace,SFMono-Regular,Consolas,monospace}pre{background:#241f30;color:#f6f0ff;border-radius:8px;padding:18px 21px;overflow-x:auto;font:13px/1.75 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre}pre code{font:inherit}.code-head{font-size:11px;background:#eee8f4;color:#46325a;display:flex;justify-content:space-between;align-items:center;gap:12px;border-radius:8px 8px 0 0;padding:10px 16px;font-weight:800}.code-head+pre{border-radius:0 0 8px 8px;margin:0}.code-head button{background:#fff;border:1px solid #cbbbd8;color:#46325a;border-radius:5px;padding:4px 10px;cursor:pointer;font:700 11px 'DM Sans',sans-serif}.step{display:inline-block;background:#ece3f6;color:#592f87;border-radius:7px;padding:5px 10px;font-size:11px;font-weight:850;margin-bottom:12px}.note{border-left:4px solid #7b58a2;padding:12px 18px;background:#f6f1fb;margin:20px 0}.success{border-left:4px solid #21845a;background:#effaf3;padding:12px 18px;margin:20px 0}.qa{margin-top:36px}.qa dt{font-weight:800;margin-top:16px}.qa dd{margin:3px 0 14px}.bottom{margin-top:36px;font-weight:750}.checklist{list-style:none;padding:0}.checklist li{margin:12px 0}.checklist li::before{content:'□';font-weight:800;color:#7955a3;margin-right:10px}@media(max-width:650px){main{margin-top:32px}.panel{padding:20px 16px}.module-nav-brand small{font-size:9px}pre{font-size:11px;padding:13px}.critical{padding:16px}}
+</style>
+</head>
+<body>
+<div class="module-nav" role="banner"><div class="module-nav-inner"><a class="module-nav-brand" href="../index.html" aria-label="Advanced Web Development, module home"><strong>IADT / CREATIVE COMPUTING</strong><small>ADVANCED WEB DEVELOPMENT · CC2 / S1</small></a><nav class="module-nav-links" aria-label="Module resources"><a href="../index.html">Module home</a><a aria-current="page" href="index.html#home">Learning Lab</a><a href="../theory.html">Concepts</a><a href="../assignment.html">Assignment</a></nav><button type="button" class="awd-search-trigger" aria-label="Search course materials (Command or Control K)"><span aria-hidden="true">⌕</span><span class="awd-search-label">Search</span><kbd>⌘ K</kbd></button></div></div>
+<main id="main">
+<p class="crumb"><a href="index.html#home">← Back to the Learning Lab</a> / Setup guidance</p>
+<p class="eyebrow">Important fix · Docker development environment</p>
+<h1>Make live styling work with Vite</h1>
+<p class="lead">If your Laravel app loses its styling when you run <code>npm run dev</code>, the Vite development server may be running inside Docker but advertising an address your browser cannot reach.</p>
+<div class="critical"><strong>What you might notice</strong><p>Pages display with plain browser styling, book covers become very large, cards stack in one column, or changes to CSS and JavaScript do not appear. The Laravel application may still load and work, but its frontend assets aren't reaching your browser correctly.</p></div>
+<section class="panel"><span class="step">STEP 1</span><h2>Open the correct file</h2><p>In your Laravel project, open <code>src/vite.config.js</code> (or <code>vite.config.js</code> if VS Code is already opened in <code>src</code>). This is the configuration file for the development server.</p><p><strong>Replace its contents</strong> with the following configuration. It keeps the existing Laravel asset inputs and tells Vite to accept connections from outside its Docker container.</p>
+<div class="code-head"><span>src/vite.config.js · complete file</span><button type="button" data-copy="vite-code">Copy</button></div><pre><code id="vite-code">import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: ['resources/css/app.css', 'resources/js/app.js'],
+            refresh: true,
+        }),
+    ],
+    server: {
+        host: '0.0.0.0',
+        port: 5173,
+        strictPort: true,
+        hmr: {
+            host: 'localhost',
+            port: 5173,
+        },
+    },
+});</code></pre>
+<p style="margin-top:15px"><strong>What these settings mean:</strong> <code>0.0.0.0</code> lets Docker forward connections into Vite; port <code>5173</code> is the development-server port; <code>localhost</code> tells the browser where to connect for live updates; and <code>strictPort</code> stops Vite silently picking a different port.</p></section>
+<section class="panel"><span class="step">STEP 2</span><h2>Run Vite from the workspace container</h2><p>Open your terminal in the project folder containing <code>compose.yaml</code>, then run:</p>
+<div class="code-head"><span>Terminal · project root (the folder containing compose.yaml)</span><button type="button" data-copy="run-code">Copy</button></div><pre><code id="run-code">docker compose exec workspace-container npm run dev</code></pre>
+<p style="margin-top:15px"><strong>Leave this terminal running while you develop.</strong> Vite watches your frontend files and serves updated CSS and JavaScript as you work. Open a second terminal for Artisan, Git or other commands.</p>
+<p>If you are already inside a terminal session in the workspace container, simply run <code>npm run dev</code> there.</p></section>
+<section class="panel"><span class="step">STEP 3</span><h2>Check that it is working</h2>
+<ol><li>Leave Vite running and open <strong><a href="http://localhost:8080" target="_blank" rel="noopener">http://localhost:8080</a></strong>, your Laravel application.</li><li>Check the Books index: on desktop, cards should form a grid with correctly sized covers, rather than a long column of oversized images.</li><li>Visit <strong><a href="http://localhost:5173/@vite/client" target="_blank" rel="noopener">http://localhost:5173/@vite/client</a></strong> in your browser. If Vite is reachable, this displays JavaScript text, not a connection error.</li><li>Try a small frontend change, such as altering a Tailwind class in a Blade template. The browser should show the updated appearance while Vite is running.</li></ol>
+<div class="success"><strong>Expected result:</strong> the site is styled correctly, and frontend changes can appear without running a new build after every edit.</div></section>
+<section class="panel"><span class="step">STEP 4</span><h2>Understand the two npm commands</h2>
+<h3><code>npm run dev</code> — while actively developing</h3><p>Starts a live Vite server. Laravel switches to loading CSS and JavaScript from that server, so the terminal needs to stay running. This is especially useful when adjusting Blade layouts, Tailwind classes or JavaScript.</p>
+<h3><code>npm run build</code> — compile static assets</h3><p>Writes compiled CSS and JavaScript to <code>public/build/</code>. Apache can then serve those files without a running Vite server. Use this when you want a stable build or don't need live updates.</p>
+<div class="note"><strong>Important:</strong> if Vite is running but your browser cannot connect to it, running <code>npm run build</code> alone may not fix the missing styling. Laravel uses the development server while the <code>public/hot</code> marker is present.</div>
+<p>When you've finished a development session, stop Vite using <code>Ctrl+C</code>. If you're switching back to static assets, run <code>npm run build</code>. If Vite has stopped but Laravel still tries to load assets from port 5173, check for a stale <code>public/hot</code> file and remove that marker <em>only when Vite is definitely not running</em>.</p>
+</section>
+<section class="panel qa"><h2>If it still looks unstyled</h2><dl><dt>Does Docker publish port 5173?</dt><dd>Run <code>docker compose ps</code> and check that the workspace service publishes port <code>5173</code> to your computer. If it doesn't, the Compose configuration may need a port mapping for that service. Do not add a second mapping if another service already uses the port.</dd><dt>Does Vite start successfully?</dt><dd>Look for a ready message in the terminal. If Vite reports that port 5173 is in use, stop the other process before trying again.</dd><dt>Do the browser and Docker agree on the address?</dt><dd>The examples assume the Laravel app is at <code>localhost:8080</code> and the browser runs on the same computer as Docker Desktop. If you use another hostname, remote machine or port, the Vite HMR host and port may need adjusting.</dd><dt>Still requesting old files?</dt><dd>Refresh the browser without cached assets, and inspect the browser's Network tab for failed requests to port <code>5173</code>.</dd></dl>
+</section>
+<p class="bottom"><a href="index.html#home">← Return to the Learning Lab</a></p>
+</main>
+<script>document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{const text=document.getElementById(button.dataset.copy).textContent;try{await navigator.clipboard.writeText(text);button.textContent='Copied ✓';setTimeout(()=>button.textContent='Copy',1600)}catch{button.textContent='Select and copy code';}}));</script>
+<script src="../search-index.js"></script><script src="../search.js" data-search-root="../"></script>
+</body></html>
